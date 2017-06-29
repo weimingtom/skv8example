@@ -50,7 +50,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\node-v4.2.1\v8_new\include;..\..\skiaui\skia\include\views;..\..\skiaui\skia\include\core;..\..\skiaui\skia\include\config;..\..\skiaui\skia\include\xml;..\..\skiaui\skia\src\gpu;..\..\skiaui\skia\include\gpu;..\..\skiaui\skia\src\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>

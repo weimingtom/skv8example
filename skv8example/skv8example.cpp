@@ -29,7 +29,7 @@
 #include "SkScalar.h"
 #include "SkSurface.h"
 
-#define FLAGS_gpu true
+#define FLAGS_gpu false //FIXME:???
 
 //DEFINE_string2(infile, i, NULL, "Name of file to load JS from.\n");
 //DEFINE_bool(gpu, true, "Use the GPU for rendering.");
@@ -95,10 +95,12 @@ void SkV8ExampleWindow::windowSizeChanged() {
         GrBackendRenderTargetDesc desc;
         desc.fWidth = SkScalarRoundToInt(this->width());
         desc.fHeight = SkScalarRoundToInt(this->height());
-        desc.fConfig = kSkia8888_GrPixelConfig;
+		desc.fConfig = kSkia8888_PM_GrPixelConfig;
         //desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
         //desc.fSampleCnt = attachmentInfo.fSampleCount;
         //desc.fStencilBits = attachmentInfo.fStencilBits;
+		GR_GL_GetIntegerv(fCurIntf, GR_GL_SAMPLES, &desc.fSampleCnt);
+		GR_GL_GetIntegerv(fCurIntf, GR_GL_STENCIL_BITS, &desc.fStencilBits);
         GrGLint buffer;
         GR_GL_GetIntegerv(fCurIntf, GR_GL_FRAMEBUFFER_BINDING, &buffer);
         desc.fRenderTargetHandle = buffer;
@@ -106,9 +108,8 @@ void SkV8ExampleWindow::windowSizeChanged() {
         SkSafeUnref(fCurRenderTarget);
         fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
         SkSafeUnref(fCurSurface);
-		//FIXME:
-		//fCurSurface = SkSurface::NewRenderTargetDirect(fCurContext, fCurRenderTarget);
-    }
+		fCurSurface = SkSurface::NewRenderTargetDirect(fCurContext, fCurRenderTarget);
+	}
 }
 #endif
 
@@ -204,6 +205,23 @@ SkOSWindow* create_sk_window(void* hwnd, int argc, char** argv) {
         data.reset(SkData::NewFromFileName(FLAGS_infile[0]));
         script = static_cast<const char*>(data->data());
     }*/
+	if (true)
+	{
+		char *script_arr = (char *)calloc(1024 * 1024, 1);
+		script_arr[0] = 0;
+		FILE *file = NULL;
+		//file = fopen("sample.js", "r");
+		//file = fopen("path.js", "r"); //failed
+		file = fopen("gears.js", "r");
+		//file = fopen("snow.js", "r");
+		//file = fopen("speed.js", "r");
+		if (file)
+		{
+			fread(script_arr, 1, 1024 * 1024, file);
+			fclose(file);
+		}
+		script = script_arr;
+	}
     if (NULL == script) {
         printf("Could not load file: %s.\n", "FLAGS_infile[0]");
         exit(1);
