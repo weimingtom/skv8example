@@ -52,13 +52,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\github5\node-v4.2.1\v8\include;E:\github5\skiaui\skia\include\views;E:\github5\skiaui\skia\include\core;E:\github5\skiaui\skia\include\config;E:\github5\skiaui\skia\include\xml;E:\github5\skiaui\skia\src\gpu;E:\github5\skiaui\skia\include\gpu;E:\github5\skiaui\skia\src\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\node-v4.2.1\v8\include;..\..\skiaui\skia\include\views;..\..\skiaui\skia\include\core;..\..\skiaui\skia\include\config;..\..\skiaui\skia\include\xml;..\..\skiaui\skia\src\gpu;..\..\skiaui\skia\include\gpu;..\..\skiaui\skia\src\core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>E:\github5\node-v4.2.1\v8\lib;E:\github5\skiaui\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\node-v4.2.1\v8\lib;..\..\skiaui\lib\Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>v8_base_0.lib;v8_base_1.lib;v8_base_2.lib;v8_base_3.lib;v8_libbase.lib;v8_libplatform.lib;v8_nosnapshot.lib;skia_images.lib;skia_animator.lib;skia_core.lib;skia_views.lib;skia_utils.lib;opengl32.lib;usp10.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkErrorReporting>PromptImmediately</LinkErrorReporting>
     </Link>
