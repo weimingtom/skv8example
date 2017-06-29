@@ -8,7 +8,7 @@
  */
 #include <v8.h>
 
-//using namespace v8;
+using namespace v8;
 
 #include "SkV8Example.h"
 #include "Global.h"
@@ -21,7 +21,7 @@
 #include "GrRenderTarget.h"
 #include "GrContext.h"
 #include "SkApplication.h"
-//#include "SkCommandLineFlags.h"
+#include "SkCommandLineFlags.h"
 #include "SkData.h"
 #include "SkDraw.h"
 #include "SkGpuDevice.h"
@@ -29,10 +29,9 @@
 #include "SkScalar.h"
 #include "SkSurface.h"
 
-#define FLAGS_gpu true
 
-//DEFINE_string2(infile, i, NULL, "Name of file to load JS from.\n");
-//DEFINE_bool(gpu, true, "Use the GPU for rendering.");
+DEFINE_string2(infile, i, NULL, "Name of file to load JS from.\n");
+DEFINE_bool(gpu, true, "Use the GPU for rendering.");
 
 void application_init() {
     SkGraphics::Init();
@@ -54,9 +53,8 @@ SkV8ExampleWindow::SkV8ExampleWindow(void* hwnd, JsContext* context)
     , fCurSurface(NULL)
 #endif
 {
-    //this->setColorType(kBGRA_8888_SkColorType);
-	this->setConfig(SkBitmap::Config::kARGB_8888_Config);
-	this->setVisibleP(true);
+    this->setColorType(kBGRA_8888_SkColorType);
+    this->setVisibleP(true);
     this->setClipToBounds(false);
 
 #if SK_SUPPORT_GPU
@@ -76,9 +74,9 @@ SkV8ExampleWindow::~SkV8ExampleWindow() {
 #if SK_SUPPORT_GPU
 void SkV8ExampleWindow::windowSizeChanged() {
     if (FLAGS_gpu) {
-        //SkOSWindow::AttachmentInfo attachmentInfo;
+        SkOSWindow::AttachmentInfo attachmentInfo;
         bool result = this->attach(
-                SkOSWindow::kNativeGL_BackEndType, 0/*, &attachmentInfo*/);
+                SkOSWindow::kNativeGL_BackEndType, 0, &attachmentInfo);
         if (!result) {
             printf("Failed to attach.");
             exit(1);
@@ -96,9 +94,9 @@ void SkV8ExampleWindow::windowSizeChanged() {
         desc.fWidth = SkScalarRoundToInt(this->width());
         desc.fHeight = SkScalarRoundToInt(this->height());
         desc.fConfig = kSkia8888_GrPixelConfig;
-        //desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-        //desc.fSampleCnt = attachmentInfo.fSampleCount;
-        //desc.fStencilBits = attachmentInfo.fStencilBits;
+        desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
+        desc.fSampleCnt = attachmentInfo.fSampleCount;
+        desc.fStencilBits = attachmentInfo.fStencilBits;
         GrGLint buffer;
         GR_GL_GetIntegerv(fCurIntf, GR_GL_FRAMEBUFFER_BINDING, &buffer);
         desc.fRenderTargetHandle = buffer;
@@ -106,8 +104,7 @@ void SkV8ExampleWindow::windowSizeChanged() {
         SkSafeUnref(fCurRenderTarget);
         fCurRenderTarget = fCurContext->wrapBackendRenderTarget(desc);
         SkSafeUnref(fCurSurface);
-		//FIXME:
-		//fCurSurface = SkSurface::NewRenderTargetDirect(fCurContext, fCurRenderTarget);
+        fCurSurface = SkSurface::NewRenderTargetDirect(fCurRenderTarget);
     }
 }
 #endif
@@ -169,11 +166,11 @@ void SkV8ExampleWindow::onHandleInval(const SkIRect& rect) {
 SkOSWindow* create_sk_window(void* hwnd, int argc, char** argv) {
     printf("Started\n");
 
-    //SkCommandLineFlags::Parse(argc, argv);
-	
+    SkCommandLineFlags::Parse(argc, argv);
+
     // Get the default Isolate created at startup.
     Isolate* isolate = Isolate::GetCurrent();
-    ::Global* global = new ::Global(isolate);
+    Global* global = new Global(isolate);
 
 
     // Set up things to look like a browser by creating
@@ -187,7 +184,7 @@ SkOSWindow* create_sk_window(void* hwnd, int argc, char** argv) {
             "console = new Console();                 \n";
 
     if (!global->parseScript(startupScript)) {
-        printf("Failed to parse startup script: %s.\n", "FLAGS_infile[0]");
+        printf("Failed to parse startup script: %s.\n", FLAGS_infile[0]);
         exit(1);
     }
 
@@ -199,19 +196,18 @@ SkOSWindow* create_sk_window(void* hwnd, int argc, char** argv) {
             "}                                      \n";
 
     SkAutoTUnref<SkData> data;
-	/*
     if (FLAGS_infile.count()) {
         data.reset(SkData::NewFromFileName(FLAGS_infile[0]));
         script = static_cast<const char*>(data->data());
-    }*/
+    }
     if (NULL == script) {
-        printf("Could not load file: %s.\n", "FLAGS_infile[0]");
+        printf("Could not load file: %s.\n", FLAGS_infile[0]);
         exit(1);
     }
     Path2D::AddToGlobal(global);
 
     if (!global->parseScript(script)) {
-		printf("Failed to parse file: %s.\n", "FLAGS_infile[0]");
+        printf("Failed to parse file: %s.\n", FLAGS_infile[0]);
         exit(1);
     }
 

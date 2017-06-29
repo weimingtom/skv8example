@@ -6,6 +6,7 @@
 
 #include "SkApplication.h"
 #include "simplewindow.h"
+#include <v8.h>
 
 #define MAX_LOADSTRING 100
 
@@ -20,6 +21,11 @@ BOOL                InitInstance(HINSTANCE, int, LPTSTR);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+v8::Handle<v8::Context> CreateShellContext(v8::Isolate* isolate) {
+	v8::Handle<v8::ObjectTemplate> global = v8::ObjectTemplate::New(isolate);
+	return v8::Context::New(isolate, NULL, global);
+}
+
 int APIENTRY _tWinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
 	LPTSTR    lpCmdLine,
@@ -31,6 +37,20 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	// Initialize global strings
 	MyRegisterClass(hInstance);
+
+	v8::V8::InitializeICU();
+	v8::V8::Initialize();
+	//v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
+	v8::Isolate* isolate = v8::Isolate::New();
+
+	v8::Isolate::Scope isolate_scope(isolate);
+	v8::HandleScope handle_scope(isolate);
+	v8::Handle<v8::Context> context = CreateShellContext(isolate);
+	if (context.IsEmpty()) {
+		fprintf(stderr, "Error creating context\n");
+		return 1;
+	}
+	v8::Context::Scope context_scope(context);
 
 	// Perform application initialization:
 	if (!InitInstance (hInstance, nCmdShow, lpCmdLine))
@@ -152,6 +172,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow, LPTSTR lpCmdLine)
 
 	return TRUE;
 }
+
+
+
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
