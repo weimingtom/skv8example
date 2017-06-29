@@ -1,5 +1,5 @@
 # skv8example
-Try to build on Windows VS2013  
+Try to build SkV8Example on Windows VS2013  
 
 ## Original Source  
 * https://github.com/servo/skia  
